@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="8dp"
+    android:background="@color/grey"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/DIAL_top"
+        android:padding="0dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/DIAL_phoneNumber"
+            android:background="@color/black"
+            android:textColor="@color/white"
+            android:text="071 219 3543"
+            android:gravity="center"
+            android:padding="4dp"
+            android:textSize="28sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/DIAL_middle"
+        android:padding="4dp"
+        android:background="@color/white"
+        android:layout_below="@id/DIAL_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/call_toggle" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/DIAL_allNumbersLayout"
+        android:layout_below="@id/DIAL_middle"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/DIAL_bottom"
+            android:padding="0dp"
+            android:alpha="100"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/DIAL_row1"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayout1"
+                    
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_1"
+                        android:text="1"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_1_alpha"
+                        android:text="icon?"
+                        android:layout_toRightOf="@id/DIAL_1"
+                        android:layout_alignBaseline="@id/DIAL_1"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayout2"
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_2"
+                        android:text="2"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_2_alpha"
+                        android:text="ABC"
+                        android:layout_toRightOf="@id/DIAL_2"
+                        android:layout_alignBaseline="@id/DIAL_2"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayout3"
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_3"
+                        android:text="3"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_3_alpha"
+                        android:text="DEF"
+                        android:layout_toRightOf="@id/DIAL_3"
+                        android:layout_alignBaseline="@id/DIAL_3"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/DIAL_row2"
+                android:layout_below="@id/DIAL_row1"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:padding="4dp"
+                    android:id="@+id/DIAL_numLayout4"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_4"
+                        android:text="4"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_4_alpha"
+                        android:text="GHI"
+                        android:layout_toRightOf="@id/DIAL_4"
+                        android:layout_alignBaseline="@id/DIAL_4"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:id="@+id/DIAL_numLayout5"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_5"
+                        android:text="5"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_5_alpha"
+                        android:text="JKL"
+                        android:layout_toRightOf="@id/DIAL_5"
+                        android:layout_alignBaseline="@id/DIAL_5"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayout6"
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_6"
+                        android:text="6"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_6_alpha"
+                        android:text="MNO"
+                        android:layout_toRightOf="@id/DIAL_6"
+                        android:layout_alignBaseline="@id/DIAL_6"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/DIAL_row3"
+                android:layout_below="@id/DIAL_row2"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayout7"
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_7"
+                        android:text="7"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_7_alpha"
+                        android:text="PQRS"
+                        android:layout_toRightOf="@id/DIAL_7"
+                        android:layout_alignBaseline="@id/DIAL_7"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayout8"
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_8"
+                        android:text="8"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_8_alpha"
+                        android:text="TUV"
+                        android:layout_toRightOf="@id/DIAL_8"
+                        android:layout_alignBaseline="@id/DIAL_8"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayout9"
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_9"
+                        android:text="9"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_9_alpha"
+                        android:text="WXYZ"
+                        android:layout_toRightOf="@id/DIAL_9"
+                        android:layout_alignBaseline="@id/DIAL_9"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/DIAL_row4"
+                android:layout_below="@id/DIAL_row3"
+                android:orientation="horizontal"
+                android:padding="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayoutHash"
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_star"
+                        android:text="*"
+                        android:textSize="36sp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayout0"
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_0"
+                        android:text="0"
+                        android:textSize="36sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/DIAL_0_alpha"
+                        android:text="_+"
+                        android:layout_toRightOf="@id/DIAL_0"
+                        android:layout_alignBaseline="@id/DIAL_0"
+                        android:textSize="16sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/DIAL_numLayoutStar"
+                    android:padding="4dp"
+                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/DIAL_hash"
+                        android:text="#"
+                        android:textSize="36sp"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_below="@id/DIAL_bottom"
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/DIAL_btnCallNormal"
+                android:src="@drawable/phone_black48"
+                android:drawableLeft="@drawable/phone_black48"
+                android:padding="12dp"
+                android:text="@string/normal_call"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/DIAL_btnCallPay4Me"
+                android:drawableLeft="@drawable/phone_red48"
+                android:padding="12dp"
+                android:text="@string/pay4me"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/DIAL_imgBackspace"
+                android:src="@android:drawable/ic_input_delete"
+                android:layout_width="wrap_content"
+                android:background="@color/grey"
+                android:padding="4dp" android:visibility="gone"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/TOG_circle"
+        android:background="@drawable/red_dot"
+        android:text="ECC"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:textColor="@color/yellow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+</RelativeLayout>
