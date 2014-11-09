@@ -5,22 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.boha.dialer.R;
 import com.boha.dialer.util.Util;
+import com.boha.ericssen.library.util.CallIntentService;
+import com.boha.ericssen.library.util.CustomToast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -275,10 +272,14 @@ public class DialerFragment extends Fragment implements PageFragment {
                 break;
         }
 
-        String uri = "tel:" + number;
-        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(uri));
-        Log.w("DialerFragment","###### calling: " + uri);
-        startActivity(callIntent);
+        Intent i = new Intent(ctx, CallIntentService.class);
+        i.putExtra(CallIntentService.EXTRA_NUMBER, number);
+        ctx.startService(i);
+//
+//        String uri = "tel:" + number;
+//        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(uri));
+//        Log.w("DialerFragment","###### calling: " + uri);
+//        startActivity(callIntent);
     }
     @Override
     public void onAttach(Activity activity) {
@@ -396,11 +397,37 @@ public class DialerFragment extends Fragment implements PageFragment {
             }
             if(TelephonyManager.CALL_STATE_OFFHOOK == state) {
                 //wait for phone to go offhook (probably set a boolean flag) so you know your app initiated the call.
-                Log.i(LOG, "OFFHOOK");
+                CustomToast t = new CustomToast(getActivity());
+                t.setGravity(Gravity.TOP, 0,0);
+                t.setDuration(8);
+                LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View v = inf.inflate(com.boha.ericssen.library.R.layout.toast_calling,null);
+                TextView tv = (TextView) v.findViewById(com.boha.ericssen.library.R.id.TC_txtNumber);
+                if (isPay4MeCall) {
+                    tv.setTextColor(ctx.getResources().getColor(R.color.absa_red));
+                } else {
+                    tv.setTextColor(ctx.getResources().getColor(R.color.green));
+                }
+                tv.setText(txtPhoneNumber.getText().toString());
+                t.setView(v);
+                t.show();
+                Log.i(LOG, "OFFHOOK " + incomingNumber);
             }
             if(TelephonyManager.CALL_STATE_IDLE == state) {
                 //when this state occurs, and your flag is set, restart your app
+//                Toast t = Toast.makeText(ctx, "", Toast.LENGTH_LONG);
+//                t.setGravity(Gravity.TOP, 0,0);
+//                LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                View v = inf.inflate(com.boha.ericssen.library.R.layout.toast_calling,null);
+//                TextView tv = (TextView) v.findViewById(com.boha.ericssen.library.R.id.TC_txtNumber);
+//                tv.setText(txtPhoneNumber.getText().toString());
+//                t.setView(inf.inflate(com.boha.ericssen.library.R.layout.toast_calling, null));
+//                t.show();
                 Log.i(LOG, "IDLE");
+                //Toast.makeText(ctx, "Detected call hangup event, idle: " + incomingNumber, Toast.LENGTH_LONG).show();
+            }
+            if (TelephonyManager.CALL_STATE_RINGING == state) {
+
             }
         }
     }

@@ -19,7 +19,6 @@ public class BohaUtil {
     public static List<BohaCallLog> getCallDetails(Context ctx) {
 
         List<BohaCallLog> list = new ArrayList<>();
-        StringBuffer sb = new StringBuffer();
         String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
 
         ContentResolver cr = ctx.getContentResolver();
@@ -31,7 +30,6 @@ public class BohaUtil {
         int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
         int cachedName = managedCursor.getColumnIndex(CallLog.Calls.CACHED_NAME);
         int newCall = managedCursor.getColumnIndex(CallLog.Calls.NEW);
-        sb.append("Call Details :");
         while (managedCursor.moveToNext()) {
             BohaCallLog log = new BohaCallLog();
             String phNumber = managedCursor.getString(number);
@@ -66,13 +64,10 @@ public class BohaUtil {
                     break;
             }
             list.add(log);
-            sb.append("\nPhone Number:--- " + phNumber + " \nCall Type:--- "
-                    + dir + " \nCall Date:--- " + callDayTime
-                    + " \nCall duration in sec :--- " + callDuration);
-            sb.append("\n----------------------------------");
-            Log.i("BohaUtil",sb.toString());
+
         }
         managedCursor.close();
+        Log.e("BohaUtil","Found calls in log: " + list.size());
         return list;
 
     }

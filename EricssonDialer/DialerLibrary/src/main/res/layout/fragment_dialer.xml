@@ -393,6 +393,7 @@
                 android:src="@drawable/phone_black48"
                 android:drawableLeft="@drawable/phone_black48"
                 android:padding="12dp"
+                style="@style/btnStyleGenoa"
                 android:text="@string/normal_call"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -400,6 +401,7 @@
                 android:id="@+id/DIAL_btnCallPay4Me"
                 android:drawableLeft="@drawable/phone_red48"
                 android:padding="12dp"
+                style="@style/btnStyleOrange"
                 android:text="@string/pay4me"
                 android:visibility="gone"
                 android:layout_width="match_parent"
