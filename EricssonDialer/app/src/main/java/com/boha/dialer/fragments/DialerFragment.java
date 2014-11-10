@@ -1,7 +1,9 @@
 package com.boha.dialer.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
@@ -10,10 +12,16 @@ import android.support.v4.app.Fragment;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.boha.dialer.R;
 import com.boha.dialer.util.Util;
 import com.boha.ericssen.library.util.CallIntentService;
@@ -274,6 +282,7 @@ public class DialerFragment extends Fragment implements PageFragment {
 
         Intent i = new Intent(ctx, CallIntentService.class);
         i.putExtra(CallIntentService.EXTRA_NUMBER, number);
+        //showDialog();
         ctx.startService(i);
 //
 //        String uri = "tel:" + number;
@@ -292,6 +301,15 @@ public class DialerFragment extends Fragment implements PageFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        Log.e(LOG, "############### onResume");
+        Toast.makeText(ctx, "Heita daarso!", Toast.LENGTH_LONG).show();
+        if (toast != null) {
+            toast.cancel();
+        }
+        super.onResume();
+    }
     @Override
     public void onDetach() {
         super.onDetach();
@@ -312,7 +330,7 @@ public class DialerFragment extends Fragment implements PageFragment {
     DialerFragmentListener mListener;
 
     public interface DialerFragmentListener {
-
+        public void onToastRequested(String number);
     }
 
     View number0, number1, number2, number3, number4,
@@ -397,39 +415,41 @@ public class DialerFragment extends Fragment implements PageFragment {
             }
             if(TelephonyManager.CALL_STATE_OFFHOOK == state) {
                 //wait for phone to go offhook (probably set a boolean flag) so you know your app initiated the call.
-                CustomToast t = new CustomToast(getActivity());
-                t.setGravity(Gravity.TOP, 0,0);
-                t.setDuration(8);
-                LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View v = inf.inflate(com.boha.ericssen.library.R.layout.toast_calling,null);
-                TextView tv = (TextView) v.findViewById(com.boha.ericssen.library.R.id.TC_txtNumber);
-                if (isPay4MeCall) {
-                    tv.setTextColor(ctx.getResources().getColor(R.color.absa_red));
-                } else {
-                    tv.setTextColor(ctx.getResources().getColor(R.color.green));
-                }
-                tv.setText(txtPhoneNumber.getText().toString());
-                t.setView(v);
-                t.show();
+
+
                 Log.i(LOG, "OFFHOOK " + incomingNumber);
             }
             if(TelephonyManager.CALL_STATE_IDLE == state) {
-                //when this state occurs, and your flag is set, restart your app
-//                Toast t = Toast.makeText(ctx, "", Toast.LENGTH_LONG);
-//                t.setGravity(Gravity.TOP, 0,0);
-//                LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                View v = inf.inflate(com.boha.ericssen.library.R.layout.toast_calling,null);
-//                TextView tv = (TextView) v.findViewById(com.boha.ericssen.library.R.id.TC_txtNumber);
-//                tv.setText(txtPhoneNumber.getText().toString());
-//                t.setView(inf.inflate(com.boha.ericssen.library.R.layout.toast_calling, null));
-//                t.show();
+                Log.e(LOG, "-------------- the phone is idle now");
+                if (toast != null) {
+                    toast.cancel();
+                }
                 Log.i(LOG, "IDLE");
-                //Toast.makeText(ctx, "Detected call hangup event, idle: " + incomingNumber, Toast.LENGTH_LONG).show();
             }
             if (TelephonyManager.CALL_STATE_RINGING == state) {
 
             }
         }
+    }
+    CustomToast toast;
+    private void showDialog() {
+        AlertDialog.Builder diag = new AlertDialog.Builder(getActivity());
+        diag.setTitle("MTN Pay 4 Me")
+                .setMessage("This is the MTN Dialer")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
     }
     TelephonyManager telephonyManager;
     EndCallListener endCallListener;
