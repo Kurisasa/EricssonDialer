@@ -1,18 +1,11 @@
 package com.boha.dialer.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,12 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.boha.dialer.R;
 import com.boha.dialer.util.Util;
-import com.boha.ericssen.library.util.CallIntentService;
-import com.boha.ericssen.library.util.CustomToast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -99,8 +89,8 @@ public class DialerFragment extends Fragment implements PageFragment {
 
 
         imgErase = (ImageView) view.findViewById(R.id.DIAL_imgBackspace);
-        btnCallNormal = (Button) view.findViewById(R.id.DIAL_btnCallNormal);
-        btnCallPay4Me = (Button) view.findViewById(R.id.DIAL_btnCallPay4Me);
+        btnCallNormal = (ImageView) view.findViewById(R.id.DIAL_btnCallNormal);
+        btnCallPay4Me = (ImageView) view.findViewById(R.id.DIAL_btnCallPay4Me);
 
         number0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,9 +184,9 @@ public class DialerFragment extends Fragment implements PageFragment {
         btnNormal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnNormal.setTextColor(ctx.getResources().getColor(R.color.white));
+                btnNormal.setTextColor(ctx.getResources().getColor(R.color.black));
                 isPay4MeCall = false;
-                btnPay4Me.setTextColor(ctx.getResources().getColor(R.color.translucent_red));
+                btnPay4Me.setTextColor(ctx.getResources().getColor(R.color.grey));
                 circle.setVisibility(View.GONE);
                 changeColors(ctx.getResources().getColor(R.color.black));
                 btnCallPay4Me.setVisibility(View.GONE);
@@ -209,7 +199,7 @@ public class DialerFragment extends Fragment implements PageFragment {
         btnPay4Me.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnNormal.setTextColor(ctx.getResources().getColor(R.color.green));
+                btnNormal.setTextColor(ctx.getResources().getColor(R.color.grey));
                 isPay4MeCall = true;
                 btnPay4Me.setTextColor(ctx.getResources().getColor(R.color.yellow));
                 circle.setVisibility(View.VISIBLE);
@@ -217,7 +207,7 @@ public class DialerFragment extends Fragment implements PageFragment {
                 changeColors(ctx.getResources().getColor(R.color.absa_red));
                 btnCallPay4Me.setVisibility(View.VISIBLE);
                 btnCallNormal.setVisibility(View.GONE);
-                Util.animateScaleX(btnCallPay4Me,300);
+                Util.animateScaleX(btnCallPay4Me,200);
                 txtPhoneNumber.setTextColor(ctx.getResources().getColor(R.color.yellow));
             }
         });
@@ -251,45 +241,20 @@ public class DialerFragment extends Fragment implements PageFragment {
         btnCallNormal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startCall(NORMAL_CALL, txtPhoneNumber.getText().toString());
+                mListener.onCallRequested(txtPhoneNumber.getText().toString(),NORMAL_CALL);
             }
         });
         btnCallPay4Me.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startCall(PAY4ME_CALL, txtPhoneNumber.getText().toString());
+                mListener.onCallRequested(txtPhoneNumber.getText().toString(),PAY4ME_CALL);
             }
         });
     }
 
-    static final int NORMAL_CALL = 1, PAY4ME_CALL = 2;
-    static final String MTN_PREFIX = "127";
-    private void startCall(int type, String number) {
-        endCallListener = new EndCallListener();
-        if (telephonyManager == null) {
-            telephonyManager =
-                    (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            telephonyManager.listen(endCallListener, PhoneStateListener.LISTEN_CALL_STATE);
-        }
+    public static final int NORMAL_CALL = 1, PAY4ME_CALL = 2;
 
-        switch (type) {
-            case NORMAL_CALL:
-                break;
-            case PAY4ME_CALL:
-                number = MTN_PREFIX + number;
-                break;
-        }
 
-        Intent i = new Intent(ctx, CallIntentService.class);
-        i.putExtra(CallIntentService.EXTRA_NUMBER, number);
-        //showDialog();
-        ctx.startService(i);
-//
-//        String uri = "tel:" + number;
-//        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(uri));
-//        Log.w("DialerFragment","###### calling: " + uri);
-//        startActivity(callIntent);
-    }
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -301,15 +266,7 @@ public class DialerFragment extends Fragment implements PageFragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        Log.e(LOG, "############### onResume");
-        Toast.makeText(ctx, "Heita daarso!", Toast.LENGTH_LONG).show();
-        if (toast != null) {
-            toast.cancel();
-        }
-        super.onResume();
-    }
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -330,7 +287,7 @@ public class DialerFragment extends Fragment implements PageFragment {
     DialerFragmentListener mListener;
 
     public interface DialerFragmentListener {
-        public void onToastRequested(String number);
+        public void onCallRequested(String number, int type);
     }
 
     View number0, number1, number2, number3, number4,
@@ -338,7 +295,7 @@ public class DialerFragment extends Fragment implements PageFragment {
 
     ImageView  imgErase;
     TextView circle, txtPhoneNumber;
-    Button btnCallNormal, btnCallPay4Me;
+    ImageView btnCallNormal, btnCallPay4Me;
     List<String> numList = new ArrayList<String>();
     private void addEntry(String entry) {
         numList.add(entry);
@@ -407,51 +364,6 @@ public class DialerFragment extends Fragment implements PageFragment {
         Util.animateRotationY(v, 300);
     }
     static final DecimalFormat df = new DecimalFormat("###,###,###,###,###,###,###,###,###,###,###");
-    private class EndCallListener extends PhoneStateListener {
-        @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
-            if(TelephonyManager.CALL_STATE_RINGING == state) {
-                Log.i(LOG, "RINGING, number: " + incomingNumber);
-            }
-            if(TelephonyManager.CALL_STATE_OFFHOOK == state) {
-                //wait for phone to go offhook (probably set a boolean flag) so you know your app initiated the call.
 
-
-                Log.i(LOG, "OFFHOOK " + incomingNumber);
-            }
-            if(TelephonyManager.CALL_STATE_IDLE == state) {
-                Log.e(LOG, "-------------- the phone is idle now");
-                if (toast != null) {
-                    toast.cancel();
-                }
-                Log.i(LOG, "IDLE");
-            }
-            if (TelephonyManager.CALL_STATE_RINGING == state) {
-
-            }
-        }
-    }
-    CustomToast toast;
-    private void showDialog() {
-        AlertDialog.Builder diag = new AlertDialog.Builder(getActivity());
-        diag.setTitle("MTN Pay 4 Me")
-                .setMessage("This is the MTN Dialer")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .show();
-    }
-    TelephonyManager telephonyManager;
-    EndCallListener endCallListener;
     static final String LOG = DialerFragment.class.getSimpleName();
 }

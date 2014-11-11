@@ -31,7 +31,7 @@
     </style>
 
     <style name="btnStyleOrange" parent="@android:style/Widget.Button">
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:gravity">center</item>
@@ -40,7 +40,7 @@
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">0.6</item>
         <item name="android:background">@drawable/custom_btn_orange</item>
-        <item name="android:padding">4dp</item>
+        <item name="android:padding">2dp</item>
     </style>
     <style name="btnStyleGenoa" parent="@android:style/Widget.Button">
         <item name="android:textSize">15sp</item>

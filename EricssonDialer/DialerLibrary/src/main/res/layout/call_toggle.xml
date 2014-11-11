@@ -13,8 +13,10 @@
         <Button
             android:id="@+id/TOG_btnNormal"
             android:text="@string/normal_call"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:layout_weight="1"
+            android:textSize="14sp"
+            android:background="@color/beige_pale"
             android:layout_width="160dp"
             android:layout_height="wrap_content" />
 
@@ -27,7 +29,8 @@
             <Button
                 android:id="@+id/TOG_btnPay4Me"
                 android:text="@string/pay4me"
-                android:textColor="@color/translucent_red"
+                style="@style/btnStyleOrange"
+                android:textColor="@color/grey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

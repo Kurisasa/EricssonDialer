@@ -16,16 +16,15 @@ public class CustomToast extends Toast {
         mDuration = time;
     }
 
-
     /**
      * Set the time to show the toast for (in seconds) 
      * @param seconds Seconds to display the toast
      */
     @Override
     public void setDuration(int seconds) {
-        super.setDuration(LENGTH_SHORT);
-        if(seconds < 2) seconds = LENGTH_LONG; //Minimum
+        if(seconds < 2) mDuration = LENGTH_LONG; //Minimum
         mDuration = seconds;
+        super.setDuration(mDuration);
     }
 
     /**
