@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.boha.dialer.fragments.DialerFragment;
 import com.boha.dialer.fragments.PageFragment;
@@ -26,6 +26,8 @@ import com.boha.ericssen.library.util.BohaUtil;
 import com.boha.ericssen.library.util.CallIntentService;
 import com.boha.ericssen.library.util.CustomToast;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,7 +112,8 @@ public class DialerActivity extends ActionBarActivity implements DialerFragment.
 
     @Override
     public void onResume() {
-        Log.e(LOG, "############### onResume ");
+        Log.e(LOG, "############### onResume isCallIdle set to true");
+        isCallIdle = true;
         if (toast != null) {
             toast.getView().setVisibility(View.GONE);
             toast.cancel();
@@ -148,6 +151,19 @@ public class DialerActivity extends ActionBarActivity implements DialerFragment.
     String number;
 
     private void startCall(int type, String number) {
+        if (!isCallIdle) {
+            Log.w(LOG,"***************** CALL is NOT IDLE, but request being made.");
+            Toast t = Toast.makeText(ctx,"Please wait a few seconds", Toast.LENGTH_LONG);
+            t.show();
+            return;
+        }
+
+        if (System.currentTimeMillis() - endCalltime < 10000) {
+            Log.w(LOG,"***************** last CALL is < 10 seconds ago...");
+            Toast t = Toast.makeText(ctx,"Just a second! Try again", Toast.LENGTH_LONG);
+            t.show();
+            return;
+        }
         endCallListener = new EndCallListener();
 
         if (telephonyManager == null) {
@@ -169,7 +185,11 @@ public class DialerActivity extends ActionBarActivity implements DialerFragment.
         Intent i = new Intent(ctx, CallIntentService.class);
         i.putExtra(CallIntentService.EXTRA_NUMBER, number);
         ctx.startService(i);
+        startCalltime = System.currentTimeMillis();
+        endCalltime = 0;
     }
+
+    long endCalltime, startCalltime;
 
     @Override
     public void onCallRequested(String number, int type) {
@@ -184,9 +204,10 @@ public class DialerActivity extends ActionBarActivity implements DialerFragment.
         }
         startCall(type, number);
 
+
     }
 
-    boolean isCallActive;
+    boolean isCallActive, isCallIdle = true;
 
     private class EndCallListener extends PhoneStateListener {
         @Override
@@ -201,13 +222,22 @@ public class DialerActivity extends ActionBarActivity implements DialerFragment.
 
             }
             if (TelephonyManager.CALL_STATE_IDLE == state) {
-                Log.i(LOG, "@@@@@@@@@@@@ CALL_STATE_IDLE - doin nutin");
+                Log.i(LOG, "@@@@@@@@@@@@ CALL_STATE_IDLE - setting isCallIdle true");
+                endCalltime = System.currentTimeMillis();
+                isCallIdle = true;
+
 
             }
 
         }
     }
 
+    public static String getElapsed(long start, long end) {
+        BigDecimal m = new BigDecimal(end - start).divide(new BigDecimal(1000));
+
+        return df.format(m.doubleValue());
+    }
+    static final DecimalFormat df = new DecimalFormat("###,###,###,###,##0.00");
     private class PagerAdapter extends FragmentStatePagerAdapter {
 
         public PagerAdapter(FragmentManager fm) {
