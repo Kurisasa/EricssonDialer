@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.boha.dialer.R;
 import com.boha.dialer.util.Util;
+import com.boha.ericssen.library.util.CallIntentService;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class DialerFragment extends Fragment implements PageFragment {
         circle = (TextView) view.findViewById(R.id.TOG_circle);
         circle.setVisibility(View.GONE);
         txtPhoneNumber  = (TextView) view.findViewById(R.id.DIAL_phoneNumber);
-        txtPhoneNumber.setText("");
+        txtPhoneNumber.setText("078 309 7639");
 
         number0 = view.findViewById(R.id.DIAL_numLayout0);
         number1 = view.findViewById(R.id.DIAL_numLayout1);
@@ -241,18 +242,16 @@ public class DialerFragment extends Fragment implements PageFragment {
         btnCallNormal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onCallRequested(txtPhoneNumber.getText().toString(),NORMAL_CALL);
+                mListener.onCallRequested(txtPhoneNumber.getText().toString(), CallIntentService.NORMAL_CALL);
             }
         });
         btnCallPay4Me.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onCallRequested(txtPhoneNumber.getText().toString(),PAY4ME_CALL);
+                mListener.onCallRequested(txtPhoneNumber.getText().toString(), CallIntentService.PAY4ME_CALL);
             }
         });
     }
-
-    public static final int NORMAL_CALL = 1, PAY4ME_CALL = 2;
 
 
     @Override

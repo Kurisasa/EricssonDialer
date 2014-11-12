@@ -1,16 +1,17 @@
 package com.boha.dialer;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,8 +27,6 @@ import com.boha.ericssen.library.util.BohaUtil;
 import com.boha.ericssen.library.util.CallIntentService;
 import com.boha.ericssen.library.util.CustomToast;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,140 +103,123 @@ public class DialerActivity extends ActionBarActivity implements DialerFragment.
     }
 
     DialerFragment dialerFragment;
-    CustomToast toast;
-    boolean isPay4MeCall;
+    boolean isPay4MeCall, isFirstService;
     public static final String MTN_PREFIX = "127";
-    EndCallListener endCallListener;
-    TelephonyManager telephonyManager;
+    CustomToast toast;
 
     @Override
     public void onResume() {
-        Log.e(LOG, "############### onResume isCallIdle set to true");
-        isCallIdle = true;
+        Log.i(LOG, "############### onResume");
         if (toast != null) {
             toast.getView().setVisibility(View.GONE);
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.show();
             toast.cancel();
-            Log.e(LOG, "$$$$$$ toast view setVisibility = GONE");
+            toast = null;
+            Log.e(LOG, "############### onResume - toast cancelled");
         }
+
         super.onResume();
     }
 
     TextView tv;
-    static final int TOAST_DURATION = 60;
-    public void openCustomToast(String number) {
-        Log.w(LOG, "################# creating new toast and showing it.....");
-        if (toast != null) {
-            toast.cancel();
-        }
-        toast = new CustomToast(ctx);
-        toast.setGravity(Gravity.TOP, 0, 0);
-        toast.setDuration(TOAST_DURATION);
-
-        LayoutInflater inf = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inf.inflate(com.boha.ericssen.library.R.layout.toast_calling, null);
-        tv = (TextView) v.findViewById(com.boha.ericssen.library.R.id.TC_txtNumber);
-        tv.setText(number);
-        toast.setView(v);
-        if (type == DialerFragment.PAY4ME_CALL) {
-            tv.setTextColor(ctx.getResources().getColor(R.color.orange));
-        } else {
-            tv.setTextColor(ctx.getResources().getColor(R.color.green));
-        }
-        toast.getView().setVisibility(View.VISIBLE);
-        toast.show();
-    }
-
     int type;
-    String number;
-
-    private void startCall(int type, String number) {
-        if (!isCallIdle) {
-            Log.w(LOG,"***************** CALL is NOT IDLE, but request being made.");
-            Toast t = Toast.makeText(ctx,"Please wait a few seconds", Toast.LENGTH_LONG);
-            t.show();
-            return;
-        }
-
-        if (System.currentTimeMillis() - endCalltime < 10000) {
-            Log.w(LOG,"***************** last CALL is < 10 seconds ago...");
-            Toast t = Toast.makeText(ctx,"Just a second! Try again", Toast.LENGTH_LONG);
-            t.show();
-            return;
-        }
-        endCallListener = new EndCallListener();
-
-        if (telephonyManager == null) {
-            telephonyManager =
-                    (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
-            telephonyManager.listen(endCallListener, PhoneStateListener.LISTEN_CALL_STATE);
-        }
-
-        switch (type) {
-            case DialerFragment.NORMAL_CALL:
-                Log.w(LOG, "###### this is a NORMAL_CALL");
-                break;
-            case DialerFragment.PAY4ME_CALL:
-                Log.w(LOG, "###### this is a PAY4ME_CALL");
-                number = MTN_PREFIX + number;
-                break;
-        }
-
-        Intent i = new Intent(ctx, CallIntentService.class);
-        i.putExtra(CallIntentService.EXTRA_NUMBER, number);
-        ctx.startService(i);
-        startCalltime = System.currentTimeMillis();
-        endCalltime = 0;
-    }
-
-    long endCalltime, startCalltime;
+    String number, displayNumber;
+    LocalBroadcastManager localBroadcastManager;
 
     @Override
     public void onCallRequested(String number, int type) {
-        Log.e(LOG, "############ onCallRequested");
-        isCallActive = true;
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        localBroadcastManager.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(LOG,"##### onReceive: " + intent.toString());
+                if (toast != null) {
+                    try {
+                        Log.e(LOG, "...zzzzzzzz ##### onReceive:  -  sleep 5 seconds, then kill toast");
+                        View v = toast.getView();
+                        TextView tv = (TextView) v.findViewById(com.boha.ericssen.library.R.id.TC_txtTile);
+                        tv.setText("Closing call ...");
+                        toast.show();
+                        Thread.sleep(5000);
+                        toast.cancel();
+                        toast = null;
+                        Log.e(LOG,"##### onReceive: Toast cancelled");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        },new IntentFilter(CallIntentService.ACTION_IDLE));
+
+        Intent i = new Intent(ctx, CallIntentService.class);
+        i.putExtra(CallIntentService.EXTRA_DISPLAY_NUMBER, number);
         this.type = type;
         this.number = number;
-        if (type == DialerFragment.PAY4ME_CALL) {
+        this.displayNumber = number;
+        if (type == CallIntentService.PAY4ME_CALL) {
             isPay4MeCall = true;
         } else {
             isPay4MeCall = false;
         }
-        startCall(type, number);
-
-
-    }
-
-    boolean isCallActive, isCallIdle = true;
-
-    private class EndCallListener extends PhoneStateListener {
-        @Override
-        public void onCallStateChanged(int state, String incomingNumber) {
-            if (TelephonyManager.CALL_STATE_RINGING == state) {
-                Log.i(LOG, "$$$$$$$ CALL_STATE_RINGING  - doin nutin: " + incomingNumber);
-
-            }
-            if (TelephonyManager.CALL_STATE_OFFHOOK == state) {
-                Log.i(LOG, "************** CALL_STATE_OFFHOOK, call type: " + type);
-                openCustomToast(number);
-
-            }
-            if (TelephonyManager.CALL_STATE_IDLE == state) {
-                Log.i(LOG, "@@@@@@@@@@@@ CALL_STATE_IDLE - setting isCallIdle true");
-                endCalltime = System.currentTimeMillis();
-                isCallIdle = true;
-
-
-            }
-
+        switch (type) {
+            case CallIntentService.NORMAL_CALL:
+                Log.d(LOG, "###### onCallRequested, this is a NORMAL_CALL");
+                break;
+            case CallIntentService.PAY4ME_CALL:
+                Log.e(LOG, "###### onCallRequested, this is a PAY4ME_CALL");
+                number = MTN_PREFIX + number;
+                break;
         }
+
+
+        i.putExtra(CallIntentService.EXTRA_NUMBER, number);
+        i.putExtra(CallIntentService.EXTRA_TYPE, type);
+        startService(i);
     }
 
-    public static String getElapsed(long start, long end) {
-        BigDecimal m = new BigDecimal(end - start).divide(new BigDecimal(1000));
-
-        return df.format(m.doubleValue());
+    @Override
+    public void onPause() {
+        Log.w(LOG, "########################### onPause");
+        if (!isBackPressed)
+            openCustomToast();
+        super.onPause();
     }
-    static final DecimalFormat df = new DecimalFormat("###,###,###,###,##0.00");
+
+    @Override
+    public void onBackPressed() {
+        Log.e(LOG, "########################### onBackPressed");
+        isBackPressed = true;
+        if (toast != null) {
+            toast.getView().setVisibility(View.GONE);
+            toast.cancel();
+        }
+        finish();
+    }
+
+    boolean isBackPressed;
+
+    private void openCustomToast() {
+        Log.w(LOG, "################# creating new toast and showing it.....");
+        toast = new CustomToast(this);
+        toast.setGravity(Gravity.TOP, 0, 0);
+        toast.setTimeToShow(300);
+
+        LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inf.inflate(com.boha.ericssen.library.R.layout.toast_calling, null);
+        TextView tv = (TextView) v.findViewById(com.boha.ericssen.library.R.id.TC_txtNumber);
+        tv.setText(displayNumber);
+        toast.setView(v);
+        if (type == CallIntentService.PAY4ME_CALL) {
+            tv.setTextColor(ctx.getResources().getColor(com.boha.ericssen.library.R.color.orange));
+        } else {
+            tv.setTextColor(ctx.getResources().getColor(com.boha.ericssen.library.R.color.green));
+        }
+        toast.getView().setVisibility(View.VISIBLE);
+        toast.forceShow();
+    }
+
     private class PagerAdapter extends FragmentStatePagerAdapter {
 
         public PagerAdapter(FragmentManager fm) {

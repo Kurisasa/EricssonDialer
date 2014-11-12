@@ -6,13 +6,14 @@
         <service
             android:name=".util.CallIntentService"
             android:exported="false"></service>
-        <receiver
+
+       <!-- <receiver
             android:name=".util.OutgoingCallInterceptor"
             android:exported="true">
             <intent-filter android:priority="1">
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
-        </receiver>
+        </receiver> -->
     </application>
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
