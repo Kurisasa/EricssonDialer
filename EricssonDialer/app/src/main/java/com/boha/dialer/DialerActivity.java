@@ -141,11 +141,11 @@ public class DialerActivity extends ActionBarActivity implements DialerFragment.
                         TextView tv = (TextView) v.findViewById(com.boha.ericssen.library.R.id.TC_txtTile);
                         tv.setText("Closing call ...");
                         toast.show();
-                        Thread.sleep(5000);
+                        Thread.sleep(TIME_TO_SHOW_LOGO);
                         toast.cancel();
                         toast = null;
                         Log.e(LOG,"##### onReceive: Toast cancelled");
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -199,12 +199,15 @@ public class DialerActivity extends ActionBarActivity implements DialerFragment.
     }
 
     boolean isBackPressed;
+    static final int
+            TIME_TO_SHOW_LOGO = 3000,
+            TIME_TO_SHOW_TOAST = 60 * 60 * 60; //1 hour
 
     private void openCustomToast() {
         Log.w(LOG, "################# creating new toast and showing it.....");
         toast = new CustomToast(this);
         toast.setGravity(Gravity.TOP, 0, 0);
-        toast.setTimeToShow(300);
+        toast.setTimeToShow(TIME_TO_SHOW_TOAST);
 
         LayoutInflater inf = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inf.inflate(com.boha.ericssen.library.R.layout.toast_calling, null);

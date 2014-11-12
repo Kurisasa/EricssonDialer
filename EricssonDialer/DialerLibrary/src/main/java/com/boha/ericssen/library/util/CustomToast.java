@@ -1,9 +1,13 @@
 package com.boha.ericssen.library.util;
 
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 public class CustomToast extends Toast {
@@ -28,7 +32,6 @@ public class CustomToast extends Toast {
         super.show();
         final Toast thisToast = this;
         if(mShowing) {
-            //System.out.println("-------- Toast still up. mShowing: " + mShowing);
         	return;
         } else {
             Log.i(LOG, "***** mShowing is FALSE...");
@@ -63,6 +66,37 @@ public class CustomToast extends Toast {
         mShowing = false;
         countDownTimer.cancel();
         Log.w(LOG,"-------- Toast cancelling from within, mShowing: " + mShowing);
+        final ObjectAnimator an = ObjectAnimator.ofFloat(this.getView(), View.SCALE_Y, 100, 0);
+        an.setDuration(2000);
+        an.setInterpolator(new AccelerateDecelerateInterpolator());
+        an.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                turnOutTheLights();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        an.start();
+
+
+    }
+    private void turnOutTheLights() {
+
         super.cancel();
+        Log.i(LOG,"@@@@@@@@ lights turned off!");
     }
 }
